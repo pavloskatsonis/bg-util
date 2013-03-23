@@ -1,7 +1,7 @@
 /*
- * async-serial.cpp
+ * PortHandler_test.cpp
  *
- *  Created on: 14 Μαρ 2013
+ *  Created on: 23 Μαρ 2013
  *      Author: pavlos
  */
 
@@ -21,6 +21,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "PortHandler.h"
 
+int main(void) {
+	bool waiting = true;
+	char buf[255];
+	int res;
+	PortHandler ph("/dev/pts/2");
+	ph.Open();
+	ph.Configure(B9600 | CS8 | CLOCAL | CREAD, IGNPAR | ICRNL, 0, ICANON);
 
+	while(waiting) {
+		res = ph.Read(buf);
+		buf[res]=0;             /* set end of string, so we can printf */
+		printf(":%s:%d\n", buf, res -1);
+		if (buf[0]=='z') waiting = false;
 
+	}
+	ph.Close();
+	return 1;
+}
