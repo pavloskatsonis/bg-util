@@ -169,9 +169,30 @@ void PortHandler::signal_handler_IO (int status)
 	wait_flag = false;
 }
 
-int PortHandler::Read(char *buffer) {
+int PortHandler::Read(char *buffer, int length) {
 	if(port_descriptor >= 0) {
-		return read(port_descriptor, buffer, sizeof(buffer)/sizeof(char));
+		int res = read(port_descriptor, buffer, length);
+		buffer[res] = 0;
+		if(res > 0 && buffer[res-1] == 10) {
+			res--;
+			buffer[res] = 0;
+		}
+		return res;
 	}
 	else return -1;
+}
+
+std::string PortHandler::ReadLine() {
+	if(port_descriptor >= 0) {
+		char buffer[255] = {0};
+		int res = read(port_descriptor, buffer, sizeof(buffer)/sizeof(char));
+		buffer[res] = 0;
+		if(res > 0 && buffer[res-1] == 10) {
+			res--;
+			buffer[res] = 0;
+		}
+		std::string line(buffer);
+		return line;
+	}
+	else return NULL;
 }

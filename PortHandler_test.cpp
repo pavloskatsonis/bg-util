@@ -25,16 +25,16 @@
 
 int main(void) {
 	bool waiting = true;
-	char buf[255];
-	int res;
-	PortHandler ph("/dev/pts/2");
+	char buf[255] = {0};
+	PortHandler ph("/dev/pts/3");
 	ph.Open();
 	ph.Configure(B9600 | CS8 | CLOCAL | CREAD, IGNPAR | ICRNL, 0, ICANON);
 
 	while(waiting) {
-		res = ph.Read(buf);
-		buf[res]=0;             /* set end of string, so we can printf */
-		printf(":%s:%d\n", buf, res -1);
+		ph.Read(buf, sizeof(buf)/sizeof(char));
+		//std::string buf = ph.ReadLine();
+		//buf[res]=0;             /* set end of string, so we can printf */
+		//printf(":%s:%d\n", buf, res -1);
 		if (buf[0]=='z') waiting = false;
 
 	}

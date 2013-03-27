@@ -44,7 +44,8 @@ public:
 	int Close();
 	int Configure(termios);
 	int Configure(tcflag_t, tcflag_t, tcflag_t, tcflag_t);
-	int Read(char *buffer);
+	int Read(char*, int);
+	std::string ReadLine();
 
 protected:
 	int Configure();
